@@ -1,0 +1,22 @@
+server:
+  port: 9191
+spring:
+  h2:
+    console:
+      enabled: true
+  application:
+    name: PAYMENT-SERVICE
+  config:
+    import: configserver:http://localhost:9196
+
+logging:
+  file:
+    name: D:/Qualigytech-Springboot/elk_logs_folder/microservices_elk_logs.log
+# traceID and spanId are predefined MDC keys - we want the logs to include them
+pattern:
+  console: "%p [%%X{traceId:-},%%X{spanId:-}] [%%t] --- %%c{1}.%%M:%%L - %%m%%n"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0

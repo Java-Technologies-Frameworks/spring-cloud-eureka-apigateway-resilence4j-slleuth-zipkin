@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: CONFIG-SERVER
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Java-Technologies-Frameworks/cloud-config-server
+          skipSslValidation: true
+
+server:
+  port: 9196
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+logging:
+  file:
+    name: D:/Qualigytech-Springboot/elk_logs_folder/microservices_elk_logs.log

@@ -1,0 +1,60 @@
+server:
+  port: 9192
+spring:
+  h2:
+    console:
+      enabled: true
+  application:
+    name: ORDER-SERVICE
+  config:
+    import: configserver:http://localhost:9196
+    name: application.yml
+    location: https://github.com/Java-Technologies-Frameworks/cloud-config-server/blob/main/application.yml
+
+  # config import is added for config client need to talk to config server and exactly what is the file name
+  #if more than one files are there
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ORDER-SERVICE:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+  # real time we need add max 2s duration and max attempt 2-3 times
+  retry:
+    instances:
+      ORDER-SERVICE:
+        max-attempts: 6
+        wait-duration: 10s
+#logging file name and path for writting the logs to file where logstash will pickup
+logging:
+  file:
+    name: D:/Qualigytech-Springboot/elk_logs_folder/microservices_elk_logs.log
+
+# traceID and spanId are predefined MDC keys - we want the logs to include them
+pattern:
+  console: "%p [%%X{traceId:-},%%X{spanId:-}] [%%t] --- %%c{1}.%%M:%%L - %%m%%n"
+
+
